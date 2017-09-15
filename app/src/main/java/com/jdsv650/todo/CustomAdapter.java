@@ -63,7 +63,7 @@ public class CustomAdapter extends BaseAdapter {
             holder.titleTextView= (TextView)view.findViewById(R.id.titleTextView);
             holder.descriptionTextView= (TextView)view.findViewById(R.id.descriptionTextView);
             holder.dateTextView= (TextView) view.findViewById(R.id.dateTextView);
-           // holder.imageView= (ImageView) view.findViewById(R.id.imageView);
+            holder.imageView= (ImageView) view.findViewById(R.id.imageView);
             view.setTag(holder);
         }else {
             holder= (ViewHolder)view.getTag();
@@ -75,7 +75,15 @@ public class CustomAdapter extends BaseAdapter {
         holder.titleTextView.setText(todo.getTitle());
         holder.descriptionTextView.setText(todo.getDescription());
         holder.dateTextView.setText(todo.getDate());
-        //holder.imageView.setImageResource(R.id.);
+
+        if (todo.getStatus() == 0)
+        {
+            holder.imageView.setImageResource(R.drawable.incomplete);
+        }
+        else
+        {
+            holder.imageView.setImageResource(R.drawable.complete);
+        }
         return view;
     }
 

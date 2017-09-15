@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     {
         persons = new ArrayList<ToDo>();
         persons.add(new ToDo("Make App", "Make ToDo app", "11/12/2017", 0));
-        persons.add(new ToDo("Do Assignment", "Assignment 3", "9/17/2017", 0));
-        persons.add(new ToDo("Get Phone", "Buy new Pixel phone", "12/25/2017", 0));
+        persons.add(new ToDo("Do Assignment", "Assignment 3", "9/17/2017", 1));
+        persons.add(new ToDo("Get Phone", "Buy new Pixel phone", "12/25/2017", 1));
         persons.add(new ToDo("Play Switch", "Try out Nintendo Switch", "9/30/2017", 0));
         persons.add(new ToDo("Watch Star Wars", "Watch new Star Wars movie", "12/28/2017", 0));
 
