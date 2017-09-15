@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto "
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/add_todo"
+        android:id="@+id/add_todo"
+        android:icon="@drawable/add_new_task"
+        app:showAsAction="always"
+        />
+
+    <item android:title="@string/view_completed"
+        android:id="@+id/view_completed"
+        android:icon="@drawable/complete"
+        app:showAsAction="always"
+        />
+</menu>

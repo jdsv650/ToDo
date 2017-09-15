@@ -1,8 +1,14 @@
 package com.jdsv650.todo;
 
+import android.app.ActionBar;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,8 +31,33 @@ public class MainActivity extends AppCompatActivity {
         // Create a cutom adapter and set to for the listview
         arrayAdapter = new CustomAdapter(this, persons);
         listView.setAdapter(arrayAdapter);
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.my_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Integer itemId = item.getItemId();
+        if (itemId == R.id.add_todo)
+        {
+            Toast.makeText(this, "Add Todo Selected", Toast.LENGTH_SHORT).show();
+        }
+        else if (itemId == R.id.view_completed)
+        {
+            Toast.makeText(this, "View Completed Todo Items", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     // seed some dummy data
     private void seedData()
