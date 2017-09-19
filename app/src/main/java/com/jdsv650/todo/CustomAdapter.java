@@ -1,6 +1,8 @@
 package com.jdsv650.todo;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,6 @@ import java.util.ArrayList;
  */
 
 public class CustomAdapter extends BaseAdapter {
-
 
     private ArrayList myList;
     private LayoutInflater inflater;
@@ -92,4 +93,6 @@ public class CustomAdapter extends BaseAdapter {
         TextView titleTextView, descriptionTextView, dateTextView;
         ImageView imageView;
     }
+
+
 }

@@ -1,6 +1,9 @@
 package com.jdsv650.todo;
 
 import android.app.ActionBar;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +17,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    ArrayList<ToDo> records = new ArrayList<ToDo>();
+
     ListView listView;
     ArrayList persons;
     CustomAdapter arrayAdapter;
@@ -24,12 +29,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // seed some data into ArrayList
-        seedData();
+       // seedData();
+
+        populateDB();
+        readDB();
 
         listView = (ListView) findViewById(R.id.listView);
 
         // Create a cutom adapter and set to for the listview
-        arrayAdapter = new CustomAdapter(this, persons);
+        arrayAdapter = new CustomAdapter(this, records);
         listView.setAdapter(arrayAdapter);
 
     }
@@ -70,4 +78,64 @@ public class MainActivity extends AppCompatActivity {
         persons.add(new ToDo("Watch Star Wars", "Watch new Star Wars movie", "12/28/2017", 0));
 
     }
+
+
+    public void populateDB()
+    {
+        Toast.makeText(this, "Populating SQLlite db", Toast.LENGTH_LONG).show();
+
+        ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
+        SQLiteDatabase db = todoDb.getWritableDatabase();
+
+        // setup record to insert
+
+        ContentValues vals = new ContentValues();
+        vals.put("TITLE", "Meet Ed");
+        vals.put("DESCRIPTION", "RL");
+        vals.put("DATE", "10/12/17");
+        vals.put("Status", 0);
+
+        if (db.insert("TODO", null, vals) == -1) // try insert
+        {
+            Toast.makeText(this, "Couldn't insert record" , Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void readDB()
+    {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                // get read access to database
+                ToDoDatabase todoDb = new ToDoDatabase(getBaseContext());
+                SQLiteDatabase db = todoDb.getReadableDatabase();
+
+                // setup the query
+                Cursor cursor = db.query("TODO", null,null,null,null,null,null);
+                cursor.moveToFirst();  // go to first item
+
+                if (cursor != null)
+                {
+                    do {
+                        Integer id = cursor.getInt(0);      // build a todo item
+                        String title = cursor.getString(1);
+                        String description = cursor.getString(2);
+                        String date = cursor.getString(3);
+                        Integer status = cursor.getInt(4);
+
+                        ToDo t = new ToDo(title, description, date, status);
+
+                        records.add(t);   // add it to the list
+
+                    } while (cursor.moveToNext());
+                }
+
+            }
+        };
+
+        runnable.run();
+    }
+
 }
