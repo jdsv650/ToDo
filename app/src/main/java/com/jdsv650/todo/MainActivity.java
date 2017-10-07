@@ -5,11 +5,15 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
+//import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         if (itemId == R.id.add_todo)
         {
             Toast.makeText(this, "Add Todo Selected", Toast.LENGTH_SHORT).show();
+            showAddTodoDialog();
         }
         else if (itemId == R.id.view_completed)
         {
@@ -137,5 +142,29 @@ public class MainActivity extends AppCompatActivity {
 
         runnable.run();
     }
+
+    AddTodoDialog dialog;
+
+    private void showAddTodoDialog() {
+        //FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
+
+        AddTodoDialog addTodoDialog = new AddTodoDialog();
+        dialog = addTodoDialog;
+        addTodoDialog.show(fm, "Add Todo");
+    }
+
+
+    public void cancelPressed(View view) {
+        Log.i("Button Press", "CANCEL");
+        dialog.dismiss();
+    }
+
+    public void savePressed(View view)
+    {
+        Log.i("Button Press", "SAVE");
+
+    }
+
 
 }
