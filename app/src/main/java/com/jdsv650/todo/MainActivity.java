@@ -144,6 +144,31 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         runnable.run();
     }
 
+    public void addTodoDB(ToDo todo)
+    {
+        ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
+        SQLiteDatabase db = todoDb.getWritableDatabase();
+
+        // setup record to insert
+
+        ContentValues vals = new ContentValues();
+        vals.put("TITLE", todo.getTitle());
+        vals.put("DESCRIPTION", todo.getDescription());
+        vals.put("DATE", todo.getDate());
+        vals.put("Status", 0);
+
+        if (db.insert("TODO", null, vals) == -1) // try insert
+        {
+            Toast.makeText(this, "Couldn't insert record" , Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(this, "record inserted" , Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
     AddTodoDialog dialog;
 
     private void showAddTodoDialog() {
@@ -162,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
                 + "\nDATE = " + todo.getDate()
                 + "\nSTATUS = " + todo.getStatus(), Toast.LENGTH_LONG).show();
 
-
+        // save todo
+        addTodoDB(todo);
+        
     }
 }
