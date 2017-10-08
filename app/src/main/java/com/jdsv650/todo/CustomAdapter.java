@@ -30,6 +30,10 @@ public class CustomAdapter extends BaseAdapter {
         myList = list;
     }
 
+    public void addToDoItem(com.jdsv650.todo.ToDo todo)
+    {
+        myList.add(todo);
+    }
 
     // override the following methods for custom adapter
 

@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
 
         // seed some data into ArrayList
        // seedData();
+        //populateDB();
 
-        populateDB();
         readDB();
 
         listView = (ListView) findViewById(R.id.listView);
@@ -164,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         else
         {
             Toast.makeText(this, "record inserted" , Toast.LENGTH_SHORT).show();
+            arrayAdapter.addToDoItem(todo);
+            arrayAdapter.notifyDataSetChanged();
 
         }
 
@@ -189,6 +191,6 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
 
         // save todo
         addTodoDB(todo);
-        
+
     }
 }
