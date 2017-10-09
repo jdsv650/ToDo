@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 //import android.support.v4.app.FragmentManager;
 import android.app.FragmentManager;
@@ -14,13 +15,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AddTodoDialog.AddTodoDialogListener {
+public class MainActivity extends AppCompatActivity implements AddTodoDialog.AddTodoDialogListener,
+        AdapterView.OnItemLongClickListener {
 
     ArrayList<ToDo> records = new ArrayList<ToDo>();
 
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         readDB();
 
         listView = (ListView) findViewById(R.id.listView);
+        listView.setOnItemLongClickListener(this);
 
         // Create a cutom adapter and set to for the listview
         arrayAdapter = new CustomAdapter(this, records);
@@ -101,9 +105,14 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         vals.put("DATE", "10/12/17");
         vals.put("Status", 0);
 
-        if (db.insert("TODO", null, vals) == -1) // try insert
+        Long result = db.insert("TODO", null, vals);
+        if (result == -1) // try insert
         {
             Toast.makeText(this, "Couldn't insert record" , Toast.LENGTH_SHORT).show();
+        }
+        else // was succcess and result contains gen id
+        {
+
         }
 
     }
@@ -119,23 +128,32 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
                 SQLiteDatabase db = todoDb.getReadableDatabase();
 
                 // setup the query
-                Cursor cursor = db.query("TODO", null,null,null,null,null,null);
-                cursor.moveToFirst();  // go to first item
+                try {
+                    Cursor cursor = db.query("TODO", null, null, null, null, null, null);
 
-                if (cursor != null)
+                    cursor.moveToFirst();  // go to first item
+
+                    if (cursor != null) {
+                        do {
+                            Long id = cursor.getLong(0);      // build a todo item
+                            String title = cursor.getString(1);
+                            String description = cursor.getString(2);
+                            String date = cursor.getString(3);
+                            Integer status = cursor.getInt(4);
+
+                            ToDo t = new ToDo(title, description, date, status);
+                            t.setId(id);
+
+                            records.add(t);   // add it to the list
+
+                        } while (cursor.moveToNext());
+                    }
+
+                }
+                catch (Exception ex)
                 {
-                    do {
-                        Integer id = cursor.getInt(0);      // build a todo item
-                        String title = cursor.getString(1);
-                        String description = cursor.getString(2);
-                        String date = cursor.getString(3);
-                        Integer status = cursor.getInt(4);
-
-                        ToDo t = new ToDo(title, description, date, status);
-
-                        records.add(t);   // add it to the list
-
-                    } while (cursor.moveToNext());
+                    // COULDN"T READ FROM DB
+                    Log.i("READ ERROR", "ERROR READING FROM DB");
                 }
 
             }
@@ -157,13 +175,16 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         vals.put("DATE", todo.getDate());
         vals.put("Status", 0);
 
-        if (db.insert("TODO", null, vals) == -1) // try insert
+        Long resultId = db.insert("TODO", null, vals); // try insert
+
+        if (resultId == -1)  // failed
         {
             Toast.makeText(this, "Couldn't insert record" , Toast.LENGTH_SHORT).show();
         }
-        else
+        else // resultId = id generated for row inserted
         {
             Toast.makeText(this, "record inserted" , Toast.LENGTH_SHORT).show();
+            todo.setId(resultId);
             arrayAdapter.addToDoItem(todo);
             arrayAdapter.notifyDataSetChanged();
 
@@ -192,5 +213,66 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         // save todo
         addTodoDB(todo);
 
+    }
+
+
+    public void updateTodoDB(ToDo todo, Integer itemNum)
+    {
+        ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
+        SQLiteDatabase db = todoDb.getWritableDatabase();
+
+        // setup record to insert
+
+        ContentValues vals = new ContentValues();
+        vals.put("TITLE", todo.getTitle());
+        vals.put("DESCRIPTION", todo.getDescription());
+        vals.put("DATE", todo.getDate());
+        vals.put("Status", todo.getStatus());
+
+        try
+        {
+            Integer result = db.update("TODO", vals, "id = ?", new String[]{itemNum.toString()});
+
+            if (result == -1)
+            {
+                Toast.makeText(this, "Couldn't update record" , Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "record updated" , Toast.LENGTH_SHORT).show();
+                //arrayAdapter.
+                arrayAdapter.notifyDataSetChanged();
+
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+
+
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        // toggles status
+        Toast.makeText(this,"LONG Click PRESSES", Toast.LENGTH_SHORT).show();
+
+        com.jdsv650.todo.ToDo todo = arrayAdapter.getTodo(i);
+
+        if (todo.getStatus() == 0)
+        {
+            todo.setStatus(1);
+        }
+        else
+        {
+            todo.setStatus(0);
+        }
+        // try to write to db - if success toggle status
+        updateTodoDB(todo, i);
+
+        return true;
     }
 }

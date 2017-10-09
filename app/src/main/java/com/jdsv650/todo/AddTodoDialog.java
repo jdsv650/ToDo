@@ -82,10 +82,10 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
             case R.id.cancelButton:
 
                 Log.i("HEYNOWWWWWWWW", "CANCEL");
+                dismiss();
                 break;
             case R.id.saveButton:
 
-                Log.i("HEYNOWWWWWW", "SAVE");
                 Log.i("TITLE TO SAVE = ", titleEditText.getText().toString());
                 Log.i("DESCRIPTION TO SAVE = ", descriptionEditText.getText().toString());
 

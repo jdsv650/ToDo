@@ -6,6 +6,7 @@ package com.jdsv650.todo;
 
 public class ToDo {
 
+    private Long id = -1l;
     private String title = "";
     private String description = "";
     private String date = "";
@@ -50,6 +51,14 @@ public class ToDo {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 

@@ -35,6 +35,11 @@ public class CustomAdapter extends BaseAdapter {
         myList.add(todo);
     }
 
+    public ToDo getTodo(int pos)
+    {
+        return (ToDo) myList.get(pos);
+    }
+
     // override the following methods for custom adapter
 
     // return the size of data list
