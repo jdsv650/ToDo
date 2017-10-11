@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
        // seedData();
         //populateDB();
 
-        readDB();
+        //readDB();
 
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemLongClickListener(this);
@@ -46,6 +46,21 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         arrayAdapter = new CustomAdapter(this, records);
         listView.setAdapter(arrayAdapter);
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        records.clear();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        records.clear();
+        readDB();
     }
 
     @Override
@@ -148,11 +163,18 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
                         } while (cursor.moveToNext());
                     }
 
+                    cursor.close();
+
                 }
                 catch (Exception ex)
                 {
                     // COULDN"T READ FROM DB
                     Log.i("READ ERROR", "ERROR READING FROM DB");
+                }
+                finally {
+
+                    arrayAdapter.notifyDataSetChanged();
+                    db.close();
                 }
 
             }
@@ -188,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
             arrayAdapter.notifyDataSetChanged();
 
         }
+
+        db.close();
 
     }
 
@@ -245,6 +269,9 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         catch (Exception ex)
         {
 
+        }
+        finally {
+            db.close();
         }
 
 

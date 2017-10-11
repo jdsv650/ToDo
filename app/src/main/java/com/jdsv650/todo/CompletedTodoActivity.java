@@ -1,5 +1,6 @@
 package com.jdsv650.todo;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -57,12 +58,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
                 // setup the query
                 try {
 
-                    //Cursor findEntry = db.query("sku_table", columns, "owner=?", new String[] { owner }, null, null, null);
                     Cursor cursor = db.query("TODO", null, "STATUS=?", new String[] { "1" }, null, null, null);
-
-                    //Cursor cursor = db.query("TODO", null, null, null, null, null, null);
-
-
                     cursor.moveToFirst();  // go to first item
 
                     if (cursor != null) {
@@ -81,6 +77,8 @@ public class CompletedTodoActivity extends AppCompatActivity implements
                         } while (cursor.moveToNext());
                     }
 
+                    cursor.close();
+                    db.close();
                     arrayAdapter.notifyDataSetChanged();
 
                 }
@@ -89,11 +87,38 @@ public class CompletedTodoActivity extends AppCompatActivity implements
                     // COULDN"T READ FROM DB
                     Log.i("READ ERROR", "ERROR READING FROM DB");
                 }
+                finally {
+                    db.close();
+                }
 
             }
         };
 
         runnable.run();
+    }
+
+    public void deleteTodoDB(Integer id, Integer listIndex)
+    {
+        ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
+        SQLiteDatabase db = todoDb.getWritableDatabase();
+
+        Integer resultId = db.delete("TODO", "ID=?", new String[] { id.toString() });
+
+        if (resultId == -1)  // failed
+        {
+            Toast.makeText(this, "Couldn't delete record" , Toast.LENGTH_SHORT).show();
+        }
+        else // resultId = id generated for row inserted
+        {
+            Toast.makeText(this, "record deleted" , Toast.LENGTH_SHORT).show();
+
+            arrayAdapter.deleteTodo(listIndex);
+            arrayAdapter.notifyDataSetChanged();
+
+        }
+
+        db.close();
+
     }
 
 
@@ -103,6 +128,8 @@ public class CompletedTodoActivity extends AppCompatActivity implements
 
         // toggles status
         Toast.makeText(this,"LONG Click PRESSES", Toast.LENGTH_SHORT).show();
+
+        deleteTodoDB(((ToDo) arrayAdapter.getItem(i)).getId().intValue(), i);
 
         return true;
     }
