@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/update_todo_layout"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"  >
+
+    <EditText
+        android:id="@+id/update_title_editText"
+        android:layout_width="match_parent"  android:layout_height="wrap_content"
+        android:hint="Title" />
+
+    <DatePicker
+        android:id="@+id/update_datePicker"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
+        android:spinnersShown="true"/>
+
+    <EditText
+        android:id="@+id/update_description_editText"
+        android:layout_width="match_parent"  android:layout_height="wrap_content"
+        android:hint="Description" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/update_cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="cancelPressed"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/update_saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="savePressed"
+            android:text="Save" />
+
+    </LinearLayout>
+
+</LinearLayout>

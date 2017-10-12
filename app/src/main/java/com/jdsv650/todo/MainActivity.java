@@ -14,13 +14,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AddTodoDialog.AddTodoDialogListener,
-        AdapterView.OnItemLongClickListener {
+        AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener
+{
 
     ArrayList<ToDo> records = new ArrayList<ToDo>();
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
 
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemLongClickListener(this);
+        listView.setOnItemClickListener(this);
 
         // Create a cutom adapter and set to for the listview
         arrayAdapter = new CustomAdapter(this, records);
@@ -226,6 +229,27 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         addTodoDialog.show(fm, "Add Todo");
     }
 
+    UpdateTodoDialog updateDialog;
+
+    private void showUpdateTodoDialog(ToDo todo) {
+
+        FragmentManager fm = getFragmentManager();
+
+        UpdateTodoDialog updateTodoDialog = new UpdateTodoDialog();
+        updateDialog = updateTodoDialog;
+
+        Bundle args = new Bundle();
+
+        args.putString("title", todo.getTitle());
+        args.putString("description", todo.getDescription());
+        args.putString("date", todo.getDate());
+
+        updateTodoDialog.setArguments(args);
+        updateTodoDialog.show(fm, "Update Todo");
+
+
+    }
+
     @Override
     public void onFinishEditDialog(ToDo todo) {
 
@@ -298,5 +322,15 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         updateTodoDB(todo, ((ToDo) arrayAdapter.getItem(i)).getId().intValue());
 
         return true;
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        Toast.makeText(this, "Regular click", Toast.LENGTH_SHORT).show();
+        com.jdsv650.todo.ToDo todo = arrayAdapter.getTodo(i);
+        showUpdateTodoDialog(todo);
+
     }
 }

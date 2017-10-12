@@ -1,7 +1,9 @@
 package com.jdsv650.todo;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 /**
@@ -17,33 +20,58 @@ import android.widget.EditText;
  */
 
 
-public class AddTodoDialog extends DialogFragment implements View.OnClickListener {
+public class UpdateTodoDialog extends DialogFragment implements View.OnClickListener {
 
-     public interface AddTodoDialogListener {
-            void onFinishEditDialog(com.jdsv650.todo.ToDo todo);
+     public interface UpdateTodoDialogListener {
+            void onFinishEditDialog(ToDo todo);
      }
 
     private EditText titleEditText;
     private EditText descriptionEditText;
     private DatePicker datePicker;
-    private AddTodoDialogListener listener;
+    private UpdateTodoDialogListener listener;
 
-    public AddTodoDialog() {
+    public UpdateTodoDialog() {
         // Empty constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_todo, container);
-        titleEditText = (EditText) view.findViewById(R.id.title_editText);
-        descriptionEditText = (EditText) view.findViewById(R.id.description_editText);
-        datePicker = (DatePicker) view.findViewById(R.id.datePicker);
+        View view = inflater.inflate(R.layout.fragment_update_todo, container);
+        titleEditText = (EditText) view.findViewById(R.id.update_title_editText);
+        descriptionEditText = (EditText) view.findViewById(R.id.update_description_editText);
+        datePicker = (DatePicker) view.findViewById(R.id.update_datePicker);
 
-        ((Button) view.findViewById(R.id.cancelButton)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.saveButton)).setOnClickListener(this);
+        String theTitle = getArguments().getString("title");
+        titleEditText.setText(theTitle);
 
-        getDialog().setTitle("Add Todo");
+        String theDesc = getArguments().getString("description");
+        descriptionEditText.setText(theDesc);
+
+        String theDate = getArguments().getString("date");
+
+        // 11/11/2008 - our format
+        //datePicker.updateDate(2016, 5, 22);
+
+        String[] dateArr = theDate.split("/");
+
+        try{
+            if (dateArr.length >= 3)
+            {
+                datePicker.updateDate(Integer.parseInt(dateArr[2]), Integer.parseInt(dateArr[0]) - 1, Integer.parseInt(dateArr[1]));
+            }
+
+        }
+        catch (NumberFormatException ex)
+        {
+        }
+
+        ((Button) view.findViewById(R.id.update_cancelButton)).setOnClickListener(this);
+        ((Button) view.findViewById(R.id.update_saveButton)).setOnClickListener(this);
+
+        getDialog().setTitle("Update Todo");
         return view;
     }
 
@@ -53,11 +81,11 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
 
         try {
             // instantiate the AddTodoDialogListener to send events back
-            listener = (AddTodoDialogListener) context;
+            listener = (UpdateTodoDialogListener) context;
         } catch (ClassCastException e) {
             // activity doesn't implement the interface
             throw new ClassCastException(context.toString()
-                    + " must implement AddTodoDialogListener");
+                    + " must implement UpdateTodoDialogListener");
         }
 
     }
@@ -66,17 +94,17 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.cancelButton:
+            case R.id.update_cancelButton:
 
                 Log.i("HEYNOWWWWWWWW", "CANCEL");
                 dismiss();
                 break;
-            case R.id.saveButton:
+            case R.id.update_saveButton:
 
                 Log.i("TITLE TO SAVE = ", titleEditText.getText().toString());
                 Log.i("DESCRIPTION TO SAVE = ", descriptionEditText.getText().toString());
 
-                AddTodoDialogListener activity = (AddTodoDialogListener) getActivity();
+                UpdateTodoDialogListener activity = (UpdateTodoDialogListener) getActivity();
 
                 ToDo todo = new ToDo("", "", "", 0);
 
