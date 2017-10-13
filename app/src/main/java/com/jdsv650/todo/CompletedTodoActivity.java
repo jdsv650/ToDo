@@ -12,6 +12,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 public class CompletedTodoActivity extends AppCompatActivity implements
         AdapterView.OnItemLongClickListener {
@@ -79,6 +82,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
 
                     cursor.close();
                     db.close();
+                    sortByDateAsc();
                     arrayAdapter.notifyDataSetChanged();
 
                 }
@@ -118,10 +122,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
         }
 
         db.close();
-
     }
-
-
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -132,5 +133,31 @@ public class CompletedTodoActivity extends AppCompatActivity implements
         deleteTodoDB(((ToDo) arrayAdapter.getItem(i)).getId().intValue(), i);
 
         return true;
+    }
+
+    private void sortByDateAsc()
+    {
+        // sort records ascending
+        Collections.sort(records, new Comparator<ToDo>() {
+            public int compare(ToDo todo1, ToDo todo2) {
+
+                Date d1 = convertStringToDate(todo1.getDate());
+                Date d2 = convertStringToDate(todo2.getDate());
+                return d1.compareTo(d2);
+            }
+        });
+    }
+
+    private Date convertStringToDate(String dateAsString)
+    {
+        Date date = new Date();
+        String[] dateArr = dateAsString.split("/");
+
+        if (dateArr.length >= 3) {
+            date.setYear(Integer.parseInt(dateArr[2]));
+            date.setMonth(Integer.parseInt(dateArr[0]) - 1);
+            date.setDate(Integer.parseInt(dateArr[1]));
+        }
+        return date;
     }
 }

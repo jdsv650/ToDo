@@ -55,6 +55,8 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
         String theDesc = getArguments().getString("description");
         descriptionEditText.setText(theDesc);
 
+        status = getArguments().getInt("status");
+
         String theDate = getArguments().getString("date");
 
         // 11/11/2008 - our format

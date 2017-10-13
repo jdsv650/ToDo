@@ -19,6 +19,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements AddTodoDialog.AddTodoDialogListener,
         UpdateTodoDialog.UpdateTodoDialogListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener
@@ -35,12 +38,6 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // seed some data into ArrayList
-       // seedData();
-        //populateDB();
-
-        //readDB();
-
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemLongClickListener(this);
         listView.setOnItemClickListener(this);
@@ -54,14 +51,12 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
     @Override
     protected void onPause() {
         super.onPause();
-
         records.clear();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         records.clear();
         readDB();
     }
@@ -94,45 +89,6 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
         return super.onOptionsItemSelected(item);
     }
 
-    // seed some dummy data
-    private void seedData()
-    {
-        persons = new ArrayList<ToDo>();
-        persons.add(new ToDo("Make App", "Make ToDo app", "11/12/2017", 0));
-        persons.add(new ToDo("Do Assignment", "Assignment 3", "9/17/2017", 1));
-        persons.add(new ToDo("Get Phone", "Buy new Pixel phone", "12/25/2017", 1));
-        persons.add(new ToDo("Play Switch", "Try out Nintendo Switch", "9/30/2017", 0));
-        persons.add(new ToDo("Watch Star Wars", "Watch new Star Wars movie", "12/28/2017", 0));
-
-    }
-
-
-    public void populateDB()
-    {
-        Toast.makeText(this, "Populating SQLlite db", Toast.LENGTH_LONG).show();
-
-        ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
-        SQLiteDatabase db = todoDb.getWritableDatabase();
-
-        // setup record to insert
-
-        ContentValues vals = new ContentValues();
-        vals.put("TITLE", "Meet Ed");
-        vals.put("DESCRIPTION", "RL");
-        vals.put("DATE", "10/12/17");
-        vals.put("Status", 0);
-
-        Long result = db.insert("TODO", null, vals);
-        if (result == -1) // try insert
-        {
-            Toast.makeText(this, "Couldn't insert record" , Toast.LENGTH_SHORT).show();
-        }
-        else // was succcess and result contains gen id
-        {
-
-        }
-
-    }
 
     private void readDB()
     {
@@ -176,14 +132,41 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
                 }
                 finally {
 
+                    sortByDateAsc();
                     arrayAdapter.notifyDataSetChanged();
                     db.close();
                 }
-
             }
         };
 
         runnable.run();
+    }
+
+
+    private void sortByDateAsc()
+    {
+        // sort records ascending
+        Collections.sort(records, new Comparator<ToDo>() {
+            public int compare(ToDo todo1, ToDo todo2) {
+
+                Date d1 = convertStringToDate(todo1.getDate());
+                Date d2 = convertStringToDate(todo2.getDate());
+                return d1.compareTo(d2);
+            }
+        });
+    }
+
+    private Date convertStringToDate(String dateAsString)
+    {
+        Date date = new Date();
+        String[] dateArr = dateAsString.split("/");
+
+        if (dateArr.length >= 3) {
+            date.setYear(Integer.parseInt(dateArr[2]));
+            date.setMonth(Integer.parseInt(dateArr[0]) - 1);
+            date.setDate(Integer.parseInt(dateArr[1]));
+        }
+        return date;
     }
 
     public void addTodoDB(ToDo todo)
@@ -210,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
             Toast.makeText(this, "record inserted" , Toast.LENGTH_SHORT).show();
             todo.setId(resultId);
             arrayAdapter.addToDoItem(todo);
+            sortByDateAsc();
             arrayAdapter.notifyDataSetChanged();
 
         }
@@ -292,7 +276,8 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
                 // update list item
 
                 records.set(itemToUpdate, todo);
-                arrayAdapter.notifyDataSetChanged();
+                sortByDateAsc();
+               // arrayAdapter.notifyDataSetChanged();
             }
         }
         catch (Exception ex)
@@ -300,12 +285,60 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
 
         }
         finally {
+            arrayAdapter.notifyDataSetChanged();
             db.close();
         }
 
 
 
     }
+
+
+
+    public void updateStatus(Integer i)
+    {
+
+        ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
+        SQLiteDatabase db = todoDb.getWritableDatabase();
+
+        com.jdsv650.todo.ToDo todo = arrayAdapter.getTodo(i);
+
+        // setup record to insert
+
+        ContentValues vals = new ContentValues();
+        vals.put("TITLE", todo.getTitle());
+        vals.put("DESCRIPTION", todo.getDescription());
+        vals.put("DATE", todo.getDate());
+        vals.put("Status", todo.getStatus());
+
+        try
+        {
+            Integer result = db.update("TODO", vals, "id = ?", new String[]{ todo.getId().toString() });
+
+            if (result == -1)
+            {
+                Toast.makeText(this, "Couldn't update record" , Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "record updated" , Toast.LENGTH_SHORT).show();
+                // update list item
+
+                records.set(itemToUpdate, todo);
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+        finally {
+            arrayAdapter.notifyDataSetChanged();
+            db.close();
+        }
+
+
+    }
+
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -324,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements AddTodoDialog.Add
             todo.setStatus(0);
         }
         // try to write to db - if success toggle status
-        updateTodoDB(todo);
+        updateStatus(i);
 
         return true;
     }
