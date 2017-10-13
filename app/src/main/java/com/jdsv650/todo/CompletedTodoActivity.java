@@ -1,6 +1,5 @@
 package com.jdsv650.todo;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -29,15 +28,12 @@ public class CompletedTodoActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed_todo);
 
-        //read db
-
         listView = (ListView) findViewById(R.id.listViewCompleted);
         listView.setOnItemLongClickListener(this);
 
-        // Create a cutom adapter and set to for the listview
+        // Create a cutom adapter and set for the listview
         arrayAdapter = new CustomAdapter(this, records);
         listView.setAdapter(arrayAdapter);
-
     }
 
     @Override
@@ -88,7 +84,6 @@ public class CompletedTodoActivity extends AppCompatActivity implements
                 }
                 catch (Exception ex)
                 {
-                    // COULDN"T READ FROM DB
                     Log.i("READ ERROR", "ERROR READING FROM DB");
                 }
                 finally {
@@ -110,28 +105,23 @@ public class CompletedTodoActivity extends AppCompatActivity implements
 
         if (resultId == -1)  // failed
         {
-            Toast.makeText(this, "Couldn't delete record" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error deleting record. Try Again." , Toast.LENGTH_SHORT).show();
         }
         else // resultId = id generated for row inserted
         {
-            Toast.makeText(this, "record deleted" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Record deleted" , Toast.LENGTH_SHORT).show();
 
             arrayAdapter.deleteTodo(listIndex);
             arrayAdapter.notifyDataSetChanged();
-
         }
 
         db.close();
     }
 
-    @Override
+    @Override // delete record on long press
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        // toggles status
-        Toast.makeText(this,"LONG Click PRESSES", Toast.LENGTH_SHORT).show();
-
         deleteTodoDB(((ToDo) arrayAdapter.getItem(i)).getId().intValue(), i);
-
         return true;
     }
 

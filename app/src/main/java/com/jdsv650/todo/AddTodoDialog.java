@@ -11,11 +11,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-
 /**
  * Created by james on 10/7/17.
  */
-
 
 public class AddTodoDialog extends DialogFragment implements View.OnClickListener {
 
@@ -35,6 +33,7 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_add_todo, container);
         titleEditText = (EditText) view.findViewById(R.id.title_editText);
         descriptionEditText = (EditText) view.findViewById(R.id.description_editText);
@@ -59,7 +58,6 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
             throw new ClassCastException(context.toString()
                     + " must implement AddTodoDialogListener");
         }
-
     }
 
     @Override
@@ -68,7 +66,6 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
         switch (view.getId()) {
             case R.id.cancelButton:
 
-                Log.i("HEYNOWWWWWWWW", "CANCEL");
                 dismiss();
                 break;
             case R.id.saveButton:
@@ -77,7 +74,6 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
                 Log.i("DESCRIPTION TO SAVE = ", descriptionEditText.getText().toString());
 
                 AddTodoDialogListener activity = (AddTodoDialogListener) getActivity();
-
                 ToDo todo = new ToDo("", "", "", 0);
 
                 String month = String.valueOf(datePicker.getMonth()+1);

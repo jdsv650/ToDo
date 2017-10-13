@@ -1,9 +1,7 @@
 package com.jdsv650.todo;
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
-
 
 /**
  * Created by james on 10/7/17.
@@ -37,7 +33,6 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
     public UpdateTodoDialog() {
         // Empty constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,7 +97,7 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
         switch (view.getId()) {
             case R.id.update_cancelButton:
 
-                Log.i("HEYNOWWWWWWWW", "CANCEL");
+                Log.i("BUTTON PRESSED", "CANCEL");
                 dismiss();
                 break;
             case R.id.update_saveButton:
