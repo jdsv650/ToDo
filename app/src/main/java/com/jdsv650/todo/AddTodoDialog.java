@@ -1,7 +1,6 @@
 package com.jdsv650.todo;
 
 import android.app.DialogFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,10 +14,11 @@ import android.widget.EditText;
  * Created by james on 10/7/17.
  */
 
+// Dialog to add a new todo item
 public class AddTodoDialog extends DialogFragment implements View.OnClickListener {
 
      public interface AddTodoDialogListener {
-            void onFinishEditDialog(com.jdsv650.todo.ToDo todo);
+            void onFinishAddDialog(com.jdsv650.todo.ToDo todo);  // callback for adding new todo
      }
 
     private EditText titleEditText;
@@ -26,9 +26,7 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
     private DatePicker datePicker;
     private AddTodoDialogListener listener;
 
-    public AddTodoDialog() {
-        // Empty constructor
-    }
+    public AddTodoDialog() { } // constructor
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,29 +44,16 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
 
-        try {
-            // instantiate the AddTodoDialogListener to send events back
-            listener = (AddTodoDialogListener) context;
-        } catch (ClassCastException e) {
-            // activity doesn't implement the interface
-            throw new ClassCastException(context.toString()
-                    + " must implement AddTodoDialogListener");
-        }
-    }
-
-    @Override
+    @Override   // handle click events
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.cancelButton:
+            case R.id.cancelButton:  // cancel so just dismiss
 
                 dismiss();
                 break;
-            case R.id.saveButton:
+            case R.id.saveButton:   // save todo
 
                 Log.i("TITLE TO SAVE = ", titleEditText.getText().toString());
                 Log.i("DESCRIPTION TO SAVE = ", descriptionEditText.getText().toString());
@@ -76,17 +61,20 @@ public class AddTodoDialog extends DialogFragment implements View.OnClickListene
                 AddTodoDialogListener activity = (AddTodoDialogListener) getActivity();
                 ToDo todo = new ToDo("", "", "", 0);
 
+                // get date info and build a string
                 String month = String.valueOf(datePicker.getMonth()+1);
                 String year = String.valueOf(datePicker.getYear());
                 String day = String.valueOf(datePicker.getDayOfMonth());
                 String dateAsString = month + "/" + day + "/" + year;
 
+                // setup new todo info
                 todo.setTitle(titleEditText.getText().toString());
                 todo.setDescription(descriptionEditText.getText().toString());
                 todo.setDate(dateAsString);
                 todo.setStatus(0);
 
-                activity.onFinishEditDialog(todo);
+                // pass back todo to any listener
+                activity.onFinishAddDialog(todo);
 
                 dismiss();
                 break;

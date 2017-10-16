@@ -20,7 +20,7 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
 
 
     public interface UpdateTodoDialogListener {
-            void onFinishUpdateDialog(com.jdsv650.todo.ToDo todo);
+            void onFinishUpdateDialog(com.jdsv650.todo.ToDo todo); // callback for update todo
      }
 
     private Long id = -1l;
@@ -28,7 +28,6 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
     private EditText titleEditText;
     private EditText descriptionEditText;
     private DatePicker datePicker;
-    private UpdateTodoDialogListener listener;
 
     public UpdateTodoDialog() {
         // Empty constructor
@@ -77,30 +76,16 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            listener = (UpdateTodoDialogListener) context;
-        } catch (ClassCastException e) {
-            // activity doesn't implement the interface
-            throw new ClassCastException(context.toString()
-                    + " must implement UpdateTodoDialogListener");
-        }
-
-    }
-
-    @Override
+    @Override   // handle click events
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.update_cancelButton:
+            case R.id.update_cancelButton:    // cancel pressed
 
                 Log.i("BUTTON PRESSED", "CANCEL");
                 dismiss();
                 break;
-            case R.id.update_saveButton:
+            case R.id.update_saveButton:   // save pressed
 
                 Log.i("TITLE TO SAVE = ", titleEditText.getText().toString());
                 Log.i("DESCRIPTION TO SAVE = ", descriptionEditText.getText().toString());
@@ -108,11 +93,13 @@ public class UpdateTodoDialog extends DialogFragment implements View.OnClickList
                 UpdateTodoDialogListener activity;
                 activity = (UpdateTodoDialogListener) getActivity();
 
+                // build string from date componenets
                 String month = String.valueOf(datePicker.getMonth()+1);
                 String year = String.valueOf(datePicker.getYear());
                 String day = String.valueOf(datePicker.getDayOfMonth());
                 String dateAsString = month + "/" + day + "/" + year;
 
+                // setup todo
                 ToDo todo = new ToDo("", "", "", 0);
                 todo.setId(id);
                 todo.setTitle(titleEditText.getText().toString());

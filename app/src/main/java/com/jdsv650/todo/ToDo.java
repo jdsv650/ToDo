@@ -4,6 +4,7 @@ package com.jdsv650.todo;
  * Created by james on 9/14/17.
  */
 
+// ToDo item
 public class ToDo {
 
     private Long id = -1l;

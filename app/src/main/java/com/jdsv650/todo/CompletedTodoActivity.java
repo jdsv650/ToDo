@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+// display only completed tasks
 public class CompletedTodoActivity extends AppCompatActivity implements
         AdapterView.OnItemLongClickListener {
 
@@ -40,10 +41,12 @@ public class CompletedTodoActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
 
+        // clear or records and reread from db
         records.clear();
         readDB();
     }
 
+    // fetch records from sqlite db
     private void readDB()
     {
         Runnable runnable = new Runnable() {
@@ -57,6 +60,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
                 // setup the query
                 try {
 
+                    // only return records where status = 1
                     Cursor cursor = db.query("TODO", null, "STATUS=?", new String[] { "1" }, null, null, null);
                     cursor.moveToFirst();  // go to first item
 
@@ -96,6 +100,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
         runnable.run();
     }
 
+    // call delete to remove a todo item
     public void deleteTodoDB(Integer id, Integer listIndex)
     {
         ToDoDatabase todoDb = new ToDoDatabase(this);  // get read - write database
@@ -125,6 +130,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
         return true;
     }
 
+    // sort list ascending
     private void sortByDateAsc()
     {
         // sort records ascending
@@ -138,6 +144,7 @@ public class CompletedTodoActivity extends AppCompatActivity implements
         });
     }
 
+    // helper to convert a date as string to Date
     private Date convertStringToDate(String dateAsString)
     {
         Date date = new Date();

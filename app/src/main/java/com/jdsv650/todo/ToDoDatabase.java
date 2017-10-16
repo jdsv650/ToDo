@@ -20,7 +20,7 @@ public class ToDoDatabase extends SQLiteOpenHelper {
     @Override   // create database table/s
     public void onCreate(SQLiteDatabase database) {
 
-
+        // create the sqlite table
         String sql = "CREATE TABLE TODO(ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "TITLE TEXT, DESCRIPTION TEXT, DATE TEXT, STATUS INTEGER )";
         database.execSQL(sql);

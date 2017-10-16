@@ -1,8 +1,6 @@
 package com.jdsv650.todo;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,7 +84,7 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         holder.view.setBackgroundColor(Color.DKGRAY);
-        // set name and phone
+
         ToDo todo = (ToDo) myList.get(position);
         holder.titleTextView.setText(todo.getTitle());
         holder.descriptionTextView.setText(todo.getDescription());
